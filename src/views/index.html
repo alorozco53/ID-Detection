@@ -32,9 +32,10 @@
         </div>
         <div class="centered-container">
           <button onclick="detectFaces()"> Detect Faces </button>
-          <button onclick="detectORB()"> Detect ORB Features </button>
-          <button onclick="detectSURF()"> Detect SURF Features </button>
-          <button onclick="detectSIFT()"> Detect SIFT Features </button>
+		  <button onclick="detectLines()">Detect Horizontal and Vertical Lines</button>
+          <!-- <button onclick="detectORB()"> Detect ORB Features </button> -->
+          <!-- <button onclick="detectSURF()"> Detect SURF Features </button> -->
+          <!-- <button onclick="detectSIFT()"> Detect SIFT Features </button> -->
         </div>
       </section>
       <section>
@@ -74,6 +75,10 @@
 
       function detectFaces() {
         return sendDetectionRequest(selectedFileData, 'faces');
+      }
+
+	  function detectLines() {
+        return sendDetectionRequest(selectedFileData, 'lines');
       }
 
       function detectORB() {

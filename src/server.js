@@ -28,6 +28,12 @@ app.post('/faces', requiresImgBase64, (req, res) => {
   res.status(202).send({ base64Data: facesImgBase64 });
 });
 
+app.post('/lines', requiresImgBase64, (req, res) => {
+  const linesImg = services.detectLines(req.params.img);
+  const linesImgBase64 = services.encodeJpgBase64(linesImg);
+  res.status(202).send({ base64Data: linesImgBase64 });
+});
+
 app.post('/features/orb', requiresImgBase64, (req, res) => {
   const orbImg = services.detectKeyPointsORB(req.params.img);
   const orbImgBase64 = services.encodeJpgBase64(orbImg);
