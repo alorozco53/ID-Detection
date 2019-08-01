@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>opencv4nodejs express example</title>
+    <title>RU.js demos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <style>
@@ -22,7 +22,7 @@
   </style>
   <body>
     <header class="centered-text">
-      <h1>opencv4nodejs express example</h1>
+      <h1>RU.js demos</h1>
     </header>
     <main>
       <section>
@@ -32,8 +32,9 @@
         </div>
         <div class="centered-container">
           <button onclick="detectFaces()"> Detect Faces </button>
-		  <button onclick="detectLines()">Detect Horizontal and Vertical Lines</button>
-          <!-- <button onclick="detectORB()"> Detect ORB Features </button> -->
+	  <button onclick="detectLines()">Detect Horizontal and Vertical Lines</button>
+          <button onclick="detectCFEPrice()"> Detect CFE Payment </button>
+	  <button onclick="detectCFEBarcode()"> Detect CFE Barcode </button>
           <!-- <button onclick="detectSURF()"> Detect SURF Features </button> -->
           <!-- <button onclick="detectSIFT()"> Detect SIFT Features </button> -->
         </div>
@@ -64,17 +65,36 @@
       }
 
       function sendDetectionRequest(imageData, endpoint) {
-        sendXhr(imageData, endpoint, function(err, responseImgData) {
+        sendXhr(imageData, endpoint, function(err, responseImgData, responseText) {
           if (err) {
             console.error(err);
           } else {
-            displayImage('output', responseImgData);
+            if (responseImgData) {
+              displayImage('output', responseImgData);
+            }
+          if (responseText) {
+             var h = document.createElement("p");
+             var i = document.createElement("hr");
+             var t = document.createTextNode(responseText);
+             h.appendChild(i);
+             i.appendChild(t);
+             document.body.appendChild(h);
+            }
           }
+      
         });
       }
 
       function detectFaces() {
         return sendDetectionRequest(selectedFileData, 'faces');
+      }
+
+      function detectCFEBarcode() {
+        return sendDetectionRequest(selectedFileData, 'cfeBarcode');
+      }
+
+      function detectCFEPrice() {
+        return sendDetectionRequest(selectedFileData, 'cfePrice');
       }
 
       function detectLines() {
