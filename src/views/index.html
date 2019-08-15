@@ -26,33 +26,82 @@
     </header>
     <main>
       <section>
+        <!-- <div class="centered-container"> -->
+        <!--   <span class="margin-right"> pick a .png or .jpg file: </span> -->
+        <!--   <input type="file" onchange="onImageSelected(event)" /> -->
+        <!-- </div> -->
         <div class="centered-container">
-          <span class="margin-right"> pick a .png or .jpg file: </span>
-          <input type="file" onchange="onImageSelected(event)" />
-        </div>
-        <div class="centered-container">
-          <button onclick="detectFaces()"> Detect Faces </button>
-	  <button onclick="detectLines()">Detect Horizontal and Vertical Lines</button>
-          <button onclick="detectCFEPrice()"> Detect CFE Payment </button>
-	  <button onclick="detectCFEBarcode()"> Detect CFE Barcode </button>
-          <!-- <button onclick="detectSURF()"> Detect SURF Features </button> -->
-          <!-- <button onclick="detectSIFT()"> Detect SIFT Features </button> -->
+	  <button id="snap">Snap Photo</button>
+	  <button id="snap_detect_id">Snap & Detect ID Contours</button>
+	  <button id="snap_detect_faces">Snap & Detect Faces</button>
+	  <button id="stop">Stop Camera</button>
+	  <button id="restart">Restart Camera</button>
         </div>
       </section>
       <section>
         <div class="centered-container">
-          <img id="input" src="" width="500" height="500" />
+	  <video id="video" width="500" height="500" autoplay></video>
+	  <canvas id="input" width="640" height="480"></canvas>
           <img id="output" src="" width="500" height="500" />
         </div>
       </section>
     </main>
-
     <script src="./api.js"></script>
     <script src="./helpers.js"></script>
     <script>
+      // Grab elements, create settings, etc.
+      var video = document.getElementById('video');
       var selectedFile;
       var selectedFileData;
+      
+      // Elements for taking the snapshot
+      var canvas = document.getElementById('input');
+      var context = canvas.getContext('2d');
+      var video = document.getElementById('video');
 
+      
+      // Get access to the camera!
+      if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Not adding `{ audio: true }` since we only want video now
+      navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+      });
+      }
+      
+      // Trigger photo take
+      document.getElementById("snap").addEventListener("click", function() {
+      context.drawImage(video, 0, 0, 640, 480);
+      selectedFileData = canvas.toDataURL();
+      });
+
+      document.getElementById("snap_detect_id").addEventListener("click",
+      function() {
+      context.drawImage(video, 0, 0, 640, 480);
+      selectedFileData = canvas.toDataURL();
+      detectLines();
+      });
+
+      document.getElementById("snap_detect_faces").addEventListener("click",
+      function() {
+      context.drawImage(video, 0, 0, 640, 480);
+      selectedFileData = canvas.toDataURL();
+      detectFaces();
+      });
+
+      document.getElementById("stop").addEventListener("click", function() {
+      video.pause();
+      video.srcObject.getTracks().forEach(function(track) { track.stop(); })
+      });
+
+      document.getElementById("restart").addEventListener("click", function() {
+      video.play();
+      navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+      });
+      });
+            
       function onImageSelected(e) {
         selectedFile = e.target.files[0];
         var reader = new FileReader();
@@ -89,30 +138,9 @@
         return sendDetectionRequest(selectedFileData, 'faces');
       }
 
-      function detectCFEBarcode() {
-        return sendDetectionRequest(selectedFileData, 'cfeBarcode');
-      }
-
-      function detectCFEPrice() {
-        return sendDetectionRequest(selectedFileData, 'cfePrice');
-      }
-
       function detectLines() {
         return sendDetectionRequest(selectedFileData, 'lines');
       }
-
-      function detectORB() {
-        return sendDetectionRequest(selectedFileData, 'features/orb');
-      }
-
-      function detectSURF() {
-        return sendDetectionRequest(selectedFileData, 'features/surf');
-      }
-
-      function detectSIFT() {
-        return sendDetectionRequest(selectedFileData, 'features/sift');
-      }
-
     </script>
   </body>
 </html>

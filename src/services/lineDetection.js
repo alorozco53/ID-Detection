@@ -166,8 +166,8 @@ module.exports = img => {
 	width = bottomCorner.x - topCorner.x;
 	height = bottomCorner.y - topCorner.y;
 	boxed = img.getRegion(new cv.Rect(topCorner.x, topCorner.y, width, height));
-	// return original;
-	return boxed;
+	return original;
+	// return boxed;
     } else {
 	console.log("Cannot find any important contour!");
 	return original;
